@@ -1,136 +1,171 @@
-# Lab 04: Loops and Functions Practice
-# Student Name: [Your Name]
-# Date: [Date]
+# Import the random library to use for the dice later
+import random
 
-# ============================================
-# Question 1: Robot Return to Origin
-# ============================================
-
-def robot_returns_to_origin(moves):
-    # Initialize starting position
-    x = 0
-    y = 0
-
-    for move in moves:
-        if move =="U":
-            y= y + 1
-        elif move =="D":
-            y= y - 1
-        elif move =="R":
-            x= x+1
-        elif move =="L":
-            x =x-1
-  
-    return x ==0 and y ==0 
-
-# Test cases
-test_moves = ["UD", "LL", "UDLR", "LDRRLRUULR"]
-
-for moves in test_moves:
-    result = robot_returns_to_origin(moves)
-    print("Moves '" + moves + "': Returns to origin? " + str(result))
-
-# ============================================
-# Question 2: Two Sum
-# ============================================
+# Hero's Attack Functions
+def hero_attacks(combat_strength, m_health_points):
+    ascii_image = """
+                                @@   @@ 
+                                @    @  
+                                @   @   
+               @@@@@@          @@  @    
+            @@       @@        @ @@     
+           @%         @     @@@ @       
+            @        @@     @@@@@     
+               @@@@@        @@       
+               @    @@@@                
+          @@@ @@                        
+       @@     @                         
+   @@*       @                          
+   @        @@                          
+           @@                                                    
+         @   @@@@@@@                    
+        @            @                  
+      @              @                  
+      """
+    print(ascii_image)
+    print("Player's weapon (" + str(combat_strength) + ") ---> Monster (" + str(m_health_points) + ")")
+    if combat_strength >= m_health_points:
+        m_health_points = 0
+        print("You have killed the monster")
+    else:
+        m_health_points -= combat_strength
+        print("You have reduced the monster's health to " + str(m_health_points))
+    return m_health_points
 
 
-# Part A: Brute Force with Nested Loops
-def two_sum_brute_force(numbers, target):
-    for i in  range(len[numbers]):
-        for j in range(i +1 ,len[numbers]):
-            if numbers[i]+ numbers[j] ==target:
-                return (i,j)
-            
-    return None
-
-    
-
-# Part B: Optimized with Dictionary
-def two_sum_optimized(numbers, target):
-    seen = {}  # Dictionary to store {number: index}
-    for i in range(len[numbers]):
-        needed = target -numbers[i]
-
-    if needed in seen:
-        return (seen[needed],i)
-    seen[numbers[i]]=i
-
-    return None
-
-    
-
-# Test cases
-test_cases = [
-    ([2, 7, 11, 15], 9),
-    ([3, 2, 4], 6),
-    ([3, 3], 6),
-    ([1, 5, 3, 8, 2], 10)
-]
-
-print("=== Part A: Brute Force (Nested Loops) ===")
-for numbers, target in test_cases:
-    result = two_sum_brute_force(numbers, target)
-    print("Numbers: " + str(numbers) + ", Target: " + str(target))
-    print("Result: " + str(result))
-    print()
-
-print("=== Part B: Optimized (Dictionary) ===")
-for numbers, target in test_cases:
-    result = two_sum_optimized(numbers, target)
-    print("Numbers: " + str(numbers) + ", Target: " + str(target))
-    print("Result: " + str(result))
-    print()
-
-# ============================================
-# Question 3: Shuffle the Array
-# ============================================
+# Monster's Attack Function
+def monster_attacks(m_combat_strength, health_points):
+    ascii_image2 = """                                                                 
+           @@@@ @                           
+      (     @*&@  ,                         
+    @               %                       
+     &#(@(@%@@@@@*   /                      
+      @@@@@.                                
+               @       /                    
+                %         @                 
+            ,(@(*/           %              
+               @ (  .@#                 @   
+                          @           .@@. @
+                   @         ,              
+                      @       @ .@          
+                             @              
+                          *(*  *      
+             """
+    print(ascii_image2)
+    print("Monster's Claw (" + str(m_combat_strength) + ") ---> Hero (" + str(health_points) + ")")
+    if m_combat_strength >= health_points:
+        health_points = 0
+        print("You have killed the monster")
+    else:
+        health_points -= m_combat_strength
+        print("The monster has reduced your health to " + str(health_points))
+    return health_points
 
 
-def shuffle_array(nums, n):
-    # Step 1: Split into two halves using slicing
-    first_half = nums[:n]    # TODO: slice from start to n
-    second_half = nums[n:]   # TODO: slice from n to end
+# Game
+# Define The number of lives for the Hero and Monster
+numLives = 10  # number of player's lives remaining
+mNumLives = 12  # number of monster's lives remaining
 
-    # Step 2: Create empty result list
-    result = []
+# Define the Dice
+diceOptions = list(range(1, 7))
+# Define the Weapons
+weapons = ["Fist", "Knife", "Club", "Gun", "Bomb", "Nuclear Bomb"]
 
-    for i in range(n):
-        result.append(first_half[i])
-        result.append(second_half[i])
+# Print out the weapons using a for loop
+for weapon in weapons:
+    print(weapon)
 
-    return result
+# Define the Loot
+loot_options = ["Health Potion", "Poison Potion", "Secret Note", "Leather Boots", "Flimsy Gloves"]
+good_loot_options = ["Health Potion", "Leather Boots"]
+bad_loot_options = ["Poison Potion"]
 
-# Test cases
-test_cases = [
-    ([2, 5, 1, 3, 4, 7], 3),
-    ([1, 2, 3, 4, 4, 3, 2, 1], 4),
-    ([1, 1, 2, 2], 2)
-]
+# Define the number of stars awarded to the Player
+num_stars = 0
 
-for nums, n in test_cases:
-    print("Original: " + str(nums))
-    print("n = " + str(n))
+# Use a While Loop to get valid input for Hero and Monster's Combat Strength
+i = 0
 
-    # Show the slices
-    print("First half (nums[:" + str(n) + "]): " + str(nums[:n]))
-    print("Second half (nums[" + str(n) + ":]): " + str(nums[n:]))
+while i in range(5):
+    combat_strength = input("Enter your combat Strength (1-6): ")
+    m_combat_strength = input("Enter the monster's combat Strength (1-6): ")
 
-    # Get result
-    result = shuffle_array(nums, n)
-    print("Shuffled: " + str(result))
-    print()
+    # Validate input: Check if the string inputted is numeric
+    if (not combat_strength.isnumeric()) or (not m_combat_strength.isnumeric()):
+        # If one of the inputs are invalid, print error message and halt
+        print("One or more invalid inputs. Player needs to enter integer numbers for Combat Strength")
+        i = i + 1
+        continue
 
-# ============================================
-# Question 4: First Unique Character
-# ============================================
+    # Note: Now safe to cast combat_strength to integer
+    # Validate input: Check if the string inputted is a number between 1-6
+    elif (int(combat_strength) not in range(1, 7)) or (int(m_combat_strength)) not in range(1, 7):
+        print("Enter a valid integer between 1 and 6 only")
+        i = i + 1
+        continue
 
-def count_characters(s):
-    # Your code here
-    pass
+    # Break out of while loop if input was valid
+    else:
+        break
 
-def first_unique_character(s):
-    # Your code here
-    pass
+# Input was valid - broke out of while loop
+combat_strength = int(combat_strength)
+m_combat_strength = int(m_combat_strength)
 
-# Test cases for Q4...
+# Roll for weapon
+input("Roll the dice for your weapon (Press enter)")
+weaponRoll = random.choice(diceOptions)
+
+# Max out the combat strength at 6
+combat_strength = min(6, (combat_strength + weaponRoll))
+print("The hero\'s weapon is " + str(weapons[weaponRoll - 1]))
+
+# Weapon Roll Analysis
+input("Analyze the Weapon roll (Press enter)")
+if weaponRoll <= 2:
+    print("--- You rolled a weak weapon, friend")
+elif weaponRoll <= 4:
+    print("--- Your weapon is meh")
+else:
+    print("--- Nice weapon, friend!")
+
+# If the weapon rolled is not a Fist, print out "Thank goodness you didn't roll the Fist..."
+if weapons[weaponRoll - 1] != "Fist":
+    print("--- Thank goodness you didn't roll the Fist...")
+
+# Roll for player health points
+input("Roll the dice for your health points (Press enter)")
+health_points = random.choice(diceOptions)
+print("Player rolled " + str(health_points) + " health points")
+
+# Roll for monster health points
+input("Roll the dice for the monster's health points (Press enter)")
+m_health_points = random.choice(diceOptions)
+print("Player rolled " + str(m_health_points) + " health points for the monster")
+
+input("Analyze the roll (Press enter)")
+# Compare Player vs Monster's strength
+print("--- You are matched in strength: " + str(combat_strength == m_combat_strength))
+
+# Check the Player's overall strength and health
+print("--- You have a strong player: " + str((combat_strength + health_points) >= 15))
+
+# Loop while the monster and the player are alive. Call fight sequence functions
+print("You meet the monster. FIGHT!!")
+while m_health_points > 0 and health_points > 0:
+
+    input("You strike first (Press Enter)")
+    m_health_points = hero_attacks(combat_strength, m_health_points)
+    if m_health_points == 0:
+        num_stars = 3
+    else:
+        input("The monster strikes (Press Enter)")
+        health_points = monster_attacks(m_combat_strength, health_points)
+        if health_points == 0:
+            num_stars = 1
+        else:
+            num_stars = 2
+
+stars = "*" * num_stars
+print("Hero gets <" + stars + "> stars")
